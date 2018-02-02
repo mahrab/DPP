@@ -1,0 +1,25 @@
+import json
+import scipy.io
+import numpy as np
+from sklearn import preprocessing
+
+def calc_similarity(filename):
+
+    with open(filename) as in_file:
+        my_data = json.load(in_file)
+    
+    matrix_dict = {}
+    k = 0
+
+    for doc in my_data:
+        vecs = preprocessing.normalize(np.array(doc['vecs']))
+        vecs = np.dot(vecs, vecs.T)
+        matrix_dict['s' + str(k)] = vecs
+        k += 1
+
+    scipy.io.savemat('sim.mat', matrix_dict)
+
+    return
+
+if __name__ == '__main__':
+    calc_similarity("aspect_query_responses_10192017_with_vecs.json")
